@@ -20,7 +20,6 @@ def c_board_init():
 
 def p_board_init():
     global p_board
-    ships = [5, 4, 3, 3, 2]
 
     p_board = [
         ["","","","","","","","","",""],
@@ -113,7 +112,45 @@ def display_board(a):
         print(letters)
 
 
+def display_ships(a):
+    # string for printing
+    x1 = ""
+    x2 = ""
+    x3 = ""
+    x4 = ""
+
+    if 5 in a:
+        x1 += "   /-----5-----\\"
+        x2 += "   \\-----------/"
+        a.pop(a.index(5))
+    
+    if 4 in a:
+        x1 += "   /----4----\\"
+        x2 += "   \\---------/"
+        a.pop(a.index(4))
+
+    for i in range(2):
+        if 3 in a:
+            x3 += "   /---3---\\"
+            x4 += "   \\-------/"
+            a.pop(a.index(3))
+    
+    if 2 in a:
+        x3 += "   /--2--\\"
+        x4 += "   \\-----/"
+    
+    print("SHIPS AVAILABLE:\n")
+    print(x1)
+    print(x2)
+    print("")
+    print(x3)
+    print(x4)
+
+
 c_board_init()
 p_board_init()
 display_board("player_only")
+print("")
 display_board("both")
+print("")
+display_ships([5,4,3,3,2])
