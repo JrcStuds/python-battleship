@@ -113,7 +113,6 @@ def place_ship(ships, a):
                 for i in range(a):
                     p_board[coord(y1)[1]][coord(y1)[0] + i] = a
 
-
 def coord(x):
     # split string coordinate into list of 2 coordinates (x, y)
     y = [x[0], x[1]]
