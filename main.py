@@ -60,10 +60,18 @@ def p_board_init():
         ["","","","","","","","","",""],
     ]
 
-    p_place_ship(ships, 5)
-    p_place_ship(ships, 4)
-    p_place_ship(ships, 3)
-    p_place_ship(ships, 2)
+    display_board("p_board")
+    print("")
+    display_ships(ships)
+    print("")
+
+    while ships:
+        x = input("Which ship would you like to place? (number between 2-5)\n")
+        if x.isdigit():
+            if int(x) in ships:
+                print(3)
+            else: print(2)
+        else: print(1)
 
 def o_place_ship(a):
     x = False
@@ -242,7 +250,9 @@ def display_board(a):
                 x += f" {10 - i} |"
             # repeat 10 times for 10 cells (x coord)
             for j in range(10):
-                if p_board[i][j]:
+                if type(p_board[i][j]) == int:
+                    x += f" {bold(p_board[i][j])} |"
+                elif p_board[i][j]:
                     x += f" {p_board[i][j]} |"
                 else:
                     x += "   |"
@@ -274,7 +284,9 @@ def display_board(a):
                 x += f" {10 - i} |"
             # repeat 10 times for 10 cells (x coord)
             for j in range(10):
-                if o_board_shown[i][j]:
+                if type(o_board_shown[i][j]) == int:
+                    x += f" {bold(o_board_shown[i][j])} |"
+                elif o_board_shown[i][j]:
                     x += f" {o_board_shown[i][j]} |"
                 else:
                     x += "   |"
@@ -306,7 +318,9 @@ def display_board(a):
                 x += f" {10 - i} |"
             # repeat 10 times for 10 cells (x coord)
             for j in range(10):
-                if o_board_hidden[i][j]:
+                if type(o_board_hidden[i][j]) == int:
+                    x += f" {bold(o_board_hidden[i][j])} |"
+                elif o_board_hidden[i][j]:
                     x += f" {o_board_hidden[i][j]} |"
                 else:
                     x += "   |"
@@ -343,8 +357,12 @@ def display_board(a):
                 # repeat 10 times for 10 cells (x coord)
                 for k in range(10):
                     # check which board data should come from
-                    if j == 0 and o_board_shown[i][k]:
+                    if j == 0 and type(o_board_shown[i][k]) == int:
                         y += f" {o_board_shown[i][k]} |"
+                    elif j == 0 and o_board_shown[i][k]:
+                        y += f" {o_board_shown[i][k]} |"
+                    elif j == 1 and type(p_board[i][k]) == int:
+                        y += f" {p_board[i][k]} |"
                     elif j == 1 and p_board[i][k]:
                         y += f" {p_board[i][k]} |"
                     else:
@@ -401,6 +419,9 @@ def display_ships(a):
         print("")
     print(x3)
     print(x4)
+
+def bold(x):
+    return "\033[1m" + str(x) + "\033[0m"
 
 
 o_board_init()
