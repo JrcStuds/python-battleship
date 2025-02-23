@@ -111,18 +111,18 @@ def o_guess():
     elif p_board[x[1]][x[0]] == "":
         p_board[x[1]][x[0]] = "o"
 
-    y = str(x[0] + 1)
-    match x[1]:
-        case 9: y = "A" + y
-        case 8: y = "B" + y
-        case 7: y = "C" + y
-        case 6: y = "D" + y
-        case 5: y = "E" + y
-        case 4: y = "F" + y
-        case 3: y = "G" + y
-        case 2: y = "H" + y
-        case 1: y = "I" + y
-        case 0: y = "J" + y
+    y = str(10 - x[1])
+    match x[0]:
+        case 0: y = "A" + y
+        case 1: y = "B" + y
+        case 2: y = "C" + y
+        case 3: y = "D" + y
+        case 4: y = "E" + y
+        case 5: y = "F" + y
+        case 6: y = "G" + y
+        case 7: y = "H" + y
+        case 8: y = "I" + y
+        case 9: y = "J" + y
 
     print(f"Opponent sent a missile to {y}\n")
 
@@ -572,15 +572,15 @@ def display_ships(a):
         print(x1)
         print(x2)
         print("")
-    print(x3)
-    print(x4)
+    if x3:
+        print(x3)
+        print(x4)
 
 def bold(x):
     return "\033[1m" + str(x) + "\033[0m"
 
 
 o_board_init()
-display_board("o_board_hidden")
 p_board_init()
 
 while check_win() == "x":
