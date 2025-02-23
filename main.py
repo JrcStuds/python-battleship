@@ -94,6 +94,38 @@ def o_place_ship(a):
     for i in range(a):
         o_board_hidden[z[i][1]][z[i][0]] = a
 
+def o_guess():
+    x = (0, 0)
+
+    toggle = False
+    while toggle == False:
+        toggle = True
+
+        x = (random.randint(0,9),random.randint(0,9))
+
+        if type(p_board[x[1]][x[0]]) == "o":
+            toggle = False
+    
+    if type(p_board[x[1]][x[0]]) == int:
+        p_board[x[1]][x[0]] = "H"
+    elif p_board[x[1]][x[0]] == "":
+        p_board[x[1]][x[0]] = "o"
+
+    y = str(x[0])
+    match x[1]:
+        case 9: y = "A" + y
+        case 8: y = "B" + y
+        case 7: y = "C" + y
+        case 6: y = "D" + y
+        case 5: y = "E" + y
+        case 4: y = "F" + y
+        case 3: y = "G" + y
+        case 2: y = "H" + y
+        case 1: y = "I" + y
+        case 0: y = "J" + y
+
+    print(f"Opponent sent a missile to {y}\n")
+
 def p_board_init():
     global p_board
     ships = [5, 4, 3, 3, 2]
@@ -228,7 +260,7 @@ def p_guess():
 
         display_board("both_shown")
 
-        guess = input("Where would you like to send a missile?\n")
+        guess = input("Where would you like to send a missile? ")
         guess = (guess[0], guess[1:])
 
         # fail conditions
@@ -553,11 +585,12 @@ p_board_init()
 
 while check_win() == "x":
     p_guess()
+    o_guess()
 
 if check_win() == "p":
-    display_board("o_board_hidden")
-    print(bold("/\\/\\/\\ PLAYER WINS /\\/\\/\\"))
+    display_board("both_shown")
+    print(bold("           /\\/\\/\\ PLAYER WINS /\\/\\/\\"))
 
 if check_win() == "o":
     display_board("both_hidden")
-    print(bold("/\\/\\/\\ OPPONENT WINS /\\/\\/\\"))
+    print(bold("          /\\/\\/\\ OPPONENT WINS /\\/\\/\\"))
