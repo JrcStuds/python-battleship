@@ -43,6 +43,57 @@ def o_board_init():
     o_place_ship(3)
     o_place_ship(2)
 
+def o_place_ship(a):
+    x = False
+    y = random.randint(0,3)
+    z = []
+
+    while x == False:
+        z = []
+        # up
+        if y == 0:
+            # pick a random place at least {a} squares from top
+            l = (random.randint(0,9), random.randint(a-1,9))
+            # repeat a times
+            for i in range(a):
+                # if square origin +/- i is empty, add to z
+                if o_board_hidden[l[1] - i][l[0]] == "":
+                    z.append((l[0], l[1] - i))
+        # down
+        elif y == 1:
+            # pick a random place at least {a} squares from bottom
+            l = (random.randint(0,9), random.randint(0,10-a))
+            # repeat a times
+            for i in range(a):
+                # if square origin +/- i is empty, add to z
+                if o_board_hidden[l[1] + i][l[0]] == "":
+                    z.append((l[0], l[1] + i))
+        # left
+        elif y == 2:
+            # pick a random place at least {a} squares from left
+            l = (random.randint(a-1,9), random.randint(0,9))
+            # repeat a times
+            for i in range(a):
+                # if square origin +/- i is empty, add to z
+                if o_board_hidden[l[1]][l[0] - i] == "":
+                    z.append((l[0] - i, l[1]))
+        # right
+        elif y == 3:
+            # pick a random place at least {a} squares from right
+            l = (random.randint(0,10-a), random.randint(0,9))
+            # repeat a times
+            for i in range(a):
+                # if square origin +/- i is empty, add to z
+                if o_board_hidden[l[1]][l[0] + i] == "":
+                    z.append((l[0] + i, l[1]))
+
+        # if all squares are empty, pass
+        if len(z) == a:
+            x = True
+    
+    for i in range(a):
+        o_board_hidden[z[i][1]][z[i][0]] = a
+
 def p_board_init():
     global p_board
     ships = [5, 4, 3, 3, 2]
@@ -76,9 +127,8 @@ def p_board_init():
 
 def p_place_ship(ships, ship_num):
     # create list of valid inputs for coords
-    valid_files = ["A","B","C","D","E","F","G","H","I","J",]
-    valid_ranks = []
-    for i in range(10): valid_ranks.append(str(i + 1))
+    valid_files = ["A","B","C","D","E","F","G","H","I","J"]
+    valid_ranks = ["1","2","3","4","5","6","7","8","9","0"]
     # toggle for coord check
     valid_coord = False
     # first and second coords
@@ -163,56 +213,63 @@ def p_place_ship(ships, ship_num):
             valid_coord = False
             print("Invalid coordinate format")
 
-def o_place_ship(a):
-    x = False
-    y = random.randint(0,3)
-    z = []
+def p_guess():
+    # create list of valid inputs for coords
+    valid_files = ["A","B","C","D","E","F","G","H","I","J"]
+    valid_ranks = ["1","2","3","4","5","6","7","8","9","10"]
+    for i in range(10): valid_ranks.append(str(i + 1))
 
-    while x == False:
-        z = []
-        # up
-        if y == 0:
-            # pick a random place at least {a} squares from top
-            l = (random.randint(0,9), random.randint(a-1,9))
-            # repeat a times
-            for i in range(a):
-                # if square origin +/- i is empty, add to z
-                if o_board_hidden[l[1] - i][l[0]] == "":
-                    z.append((l[0], l[1] - i))
-        # down
-        elif y == 1:
-            # pick a random place at least {a} squares from bottom
-            l = (random.randint(0,9), random.randint(0,10-a))
-            # repeat a times
-            for i in range(a):
-                # if square origin +/- i is empty, add to z
-                if o_board_hidden[l[1] + i][l[0]] == "":
-                    z.append((l[0], l[1] + i))
-        # left
-        elif y == 2:
-            # pick a random place at least {a} squares from left
-            l = (random.randint(a-1,9), random.randint(0,9))
-            # repeat a times
-            for i in range(a):
-                # if square origin +/- i is empty, add to z
-                if o_board_hidden[l[1]][l[0] - i] == "":
-                    z.append((l[0] - i, l[1]))
-        # right
-        elif y == 3:
-            # pick a random place at least {a} squares from right
-            l = (random.randint(0,10-a), random.randint(0,9))
-            # repeat a times
-            for i in range(a):
-                # if square origin +/- i is empty, add to z
-                if o_board_hidden[l[1]][l[0] + i] == "":
-                    z.append((l[0] + i, l[1]))
+    # keep asking coord until valid
+    guess = ""
+    # toggle for valid coord
+    valid = False
+    while valid == False:
+        valid = True
 
-        # if all squares are empty, pass
-        if len(z) == a:
-            x = True
+        display_board("both_shown")
+
+        guess = input("Where would you like to send a missile?\n")
+        guess = (guess[0], guess[1:])
+
+        # fail conditions
+        if len(guess) >= 4:
+            print("That's not a valid coordinate")
+            valid = False
+        elif len(guess) >= 3 and guess[2] != "0":
+            print("That's not a valid coordinate")
+            valid = False
+        elif guess[0] not in valid_files or guess[1] not in valid_ranks:
+            print("That's not a valid coordinate")
+            valid = False
+        elif o_board_shown[coord(guess)[1]][coord(guess)[0]] != "":
+            print("You've already guessed there")
+            valid = False
+    guess = coord(guess)
+
+    # set missile on both opponent boards
+    if o_board_hidden[guess[1]][guess[0]] == "":
+        o_board_shown[guess[1]][guess[0]] = "o"
+        o_board_hidden[guess[1]][guess[0]] = "o"
+    elif type(o_board_hidden[guess[1]][guess[0]]) == int:
+        o_board_shown[guess[1]][guess[0]] = "H"
+        o_board_hidden[guess[1]][guess[0]] = "H"
+
+def check_win():
+    p_win = 0
+    o_win = 0
+
+    for i in range(10):
+        for j in range(10):
+            if o_board_hidden[i][j] == "H":
+                p_win += 1
+            if p_board[i][j] == "H":
+                o_win += 1
     
-    for i in range(a):
-        o_board_hidden[z[i][1]][z[i][0]] = a
+    if p_win == 17:
+        return "p"
+    elif o_win == 17:
+        return "o"
+    else: return "x"
 
 def coord(x):
     # split string coordinate into list of 2 coordinates (x, y)
@@ -348,7 +405,7 @@ def display_board(a):
         
         print(letters)
 
-    elif a == "both":
+    elif a == "both_shown":
         headers = "               OPPONENT'S BOARD                                         YOUR BOARD"
         letters = "     A   B   C   D   E   F   G   H   I   J                 A   B   C   D   E   F   G   H   I   J"
         line = "   +---+---+---+---+---+---+---+---+---+---+             +---+---+---+---+---+---+---+---+---+---+"
@@ -377,6 +434,54 @@ def display_board(a):
                         y += f" {o_board_shown[i][k]} |"
                     elif j == 0 and o_board_shown[i][k]:
                         y += f" {o_board_shown[i][k]} |"
+                    elif j == 1 and type(p_board[i][k]) == int:
+                        y += f" {p_board[i][k]} |"
+                    elif j == 1 and p_board[i][k]:
+                        y += f" {p_board[i][k]} |"
+                    else:
+                        y += "   |"
+                # add row number at end of board row
+                if i == 0:
+                    y += f" {10 - i}"
+                else:
+                    y += f" {10 - i} "
+                # add board row to total row
+                x += f"{y}       "
+            # print row and separating line
+            print(x)
+            print(line)
+        
+        print(letters)
+
+    elif a == "both_hidden":
+        headers = "               OPPONENT'S BOARD                                         YOUR BOARD"
+        letters = "     A   B   C   D   E   F   G   H   I   J                 A   B   C   D   E   F   G   H   I   J"
+        line = "   +---+---+---+---+---+---+---+---+---+---+             +---+---+---+---+---+---+---+---+---+---+"
+
+        print(headers)
+        print(letters)
+        
+        print(line)
+        # repeat 10 times for 10 rows (y coord)
+        for i in range(10):
+            # variable for row
+            x = ""
+            # repeat 2 times for 2 boards
+            for j in range(2):
+                # variable for row of board
+                y = ""
+                # add total row number at start of board row
+                if i == 0:
+                    y += f"{10 - i} |"
+                else:
+                    y += f" {10 - i} |"
+                # repeat 10 times for 10 cells (x coord)
+                for k in range(10):
+                    # check which board data should come from
+                    if j == 0 and type(o_board_hidden[i][k]) == int:
+                        y += f" {o_board_hidden[i][k]} |"
+                    elif j == 0 and o_board_hidden[i][k]:
+                        y += f" {o_board_hidden[i][k]} |"
                     elif j == 1 and type(p_board[i][k]) == int:
                         y += f" {p_board[i][k]} |"
                     elif j == 1 and p_board[i][k]:
@@ -443,6 +548,16 @@ def bold(x):
 
 
 o_board_init()
-p_board_init()
-display_board("both")
 display_board("o_board_hidden")
+p_board_init()
+
+while check_win() == "x":
+    p_guess()
+
+if check_win() == "p":
+    display_board("o_board_hidden")
+    print(bold("/\\/\\/\\ PLAYER WINS /\\/\\/\\"))
+
+if check_win() == "o":
+    display_board("both_hidden")
+    print(bold("/\\/\\/\\ OPPONENT WINS /\\/\\/\\"))
