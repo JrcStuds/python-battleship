@@ -111,7 +111,7 @@ def o_guess():
     elif p_board[x[1]][x[0]] == "":
         p_board[x[1]][x[0]] = "o"
 
-    y = str(x[0])
+    y = str(x[0] + 1)
     match x[1]:
         case 9: y = "A" + y
         case 8: y = "B" + y
@@ -160,7 +160,7 @@ def p_board_init():
 def p_place_ship(ships, ship_num):
     # create list of valid inputs for coords
     valid_files = ["A","B","C","D","E","F","G","H","I","J"]
-    valid_ranks = ["1","2","3","4","5","6","7","8","9","0"]
+    valid_ranks = ["1","2","3","4","5","6","7","8","9","10"]
     # toggle for coord check
     valid_coord = False
     # first and second coords
